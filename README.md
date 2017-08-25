@@ -2,6 +2,8 @@
 
 Store your secrets securely.
 
+https://secretco.in/
+
 ## Description
 
 Storing sensitive data can be problematic. If it gets accidentally lost or destroyed, you lose your data. If stolen, your data is compromised. You can make multiple copies and store them in isolation, but this increases the risk of being stolen or misplaced. You can encrypt them, but then you face the same problem storing the encryption key.
