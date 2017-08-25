@@ -140,6 +140,14 @@
                     </div>
                   </div>
                 </template>
+                <div class="row" v-show="shares.length > 0">
+                  <div class="four columns">
+                    <input class="button" type="submit" value="Download All Single File" @click="downloadall">
+                  </div>
+                  <div class="eight columns center">
+                    <i>{{ downloadFilenamePrefix }}-all-shares.txt</i>
+                  </div>
+                </div>
               </form>
           </div>
         
@@ -210,6 +218,10 @@
         download: function (idx) {
             var prefix = this.downloadFilenamePrefix.length > 0 ? this.downloadFilenamePrefix : 'securecoin';
             saveTextAs(this.shares[idx], prefix + '-' + idx + '.txt' );   
+        },
+        downloadall: function() {
+            var prefix = this.downloadFilenamePrefix.length > 0 ? this.downloadFilenamePrefix : 'securecoin';
+            saveTextAs(this.shares.join('\n'), prefix + '-all-shares.txt' );
         },
         upload: function(e) {
             this.sharesRestore = [];
