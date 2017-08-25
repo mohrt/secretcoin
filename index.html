@@ -47,7 +47,7 @@
       <img class="value-img" src="images/keys.svg">
     </section>
     <div class="docs-section" id="intro">
-      <p>Storing sensitive data, such as a Bitcoin wallet mneumonic phrase, can be problematic. If it gets accidentally lost or destroyed, you lose your backup. You can make multiple copies and keep them in different locations, but this increases the risk of being stolen or misplaced. You can encrypt them, but then you face the same problem storing the encryption key.</p>
+      <p>Storing sensitive data, such as a Bitcoin wallet mnemonic phrase, can be problematic. If it gets accidentally lost or destroyed, you lose your backup. You can make multiple copies and keep them in different locations, but this increases the risk of being stolen or misplaced. You can encrypt them, but then you face the same problem storing the encryption key.</p>
       <p>Secret Coin uses <a href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir's Secret Sharing</a> algorithm to divide your secret into multiple (N) pieces, and then you can restore it using a specified number of the pieces (M of N). None of the pieces contain identifiable information about the secret. If any piece, or a total of (M-1) pieces are compromised, the secret is still kept.</p>
       <p>
         All operations happen in your browser. You can disconnect from the network and use this web page. The source for this website is available on <a href="https://github.com/mohrt/secretcoin">GitHub</a>. <span class="red">It is highly recommended to download the source .zip and use it on an off-line computer.</span>
