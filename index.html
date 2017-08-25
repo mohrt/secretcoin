@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Store your Secrets Securely.</title>
+  <meta name="Store your Secrets Securely." content="">
+  <meta name="mohrt" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/skeleton-tabs.css">
+  <link rel="stylesheet" href="css/custom.css">
+
+  <!-- SCRIPTS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="js/jquery-3.2.1.slim.min.js"></script>
+  <script src="js/skeleton-tabs.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/secrets.min.js"></script>
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container" id="app">
+    <section class="header">
+      <h2 class="title">Welcome to Secret Coin.</h2>
+      <h2>Store your secrets securely.</h2>
+      <img class="value-img" src="images/keys.svg">
+    </section>
+    <div class="docs-section" id="intro">
+      <p>Storing sensitive data, such as a Bitcoin wallet mneumonic phrase, can be problematic. If it gets accidentally lost or destroyed, you lose your backup. You can make multiple copies and keep them in different locations, but this increases the risk of being stolen or misplaced. You can encrypt them, but then you face the same problem storing the encryption key.</p>
+      <p>Secret Coin uses <a href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir's Secret Sharing</a> algorithm to divide your secret into multiple (N) pieces, and then you can restore it using a specified number of the pieces (M of N). None of the pieces contain identifiable information about the secret. If any piece, or a total of (M-1) pieces are compromised, the secret is still kept.</p>
+      <p>
+        All operations happen in your browser. You can disconnect from the network and use this web page. The source for this website is available on GitHub. <span class="red">It is highly recommended to download the source .zip and use it on an off-line computer.</span>
+      </p>
+    </div>
+
+    <ul class="tab-nav">
+      <li>
+        <a class="button active" href="#generate">Generate</a>
+      </li>
+      <li>
+        <a class="button" href="#restore">Restore</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="generate">
+
+          <div class="docs-section" id="form-generate">
+              <form @submit.prevent>
+                <div class="row">
+                  <div class="twelve columns">
+                    <label for="secretInput">Secret</label>
+                    <input class="u-full-width" type="text" placeholder="Enter a mnuemonic seed, private key, or any text you want kept secret." id="secretInput" v-model="secret">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="six columns">
+                    <label for="secretPieces"># of pieces</label>
+                    <select class="u-full-width" id="secretPieces" v-model.number="piecesTotal" type="number">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                  </div>
+                  <div class="six columns">
+                    <label for="secretPieces"># required to restore</label>
+                    <select class="u-full-width" id="secretPieces" v-model.number="piecesRestore" type="number">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="twelve columns">
+                    <input class="button-primary" type="submit" value="Generate" @click="generate">
+                  </div>
+                </div>
+                <template v-for="(share,index) in shares">
+                  <div class="row">
+                    <div class="twelve columns">
+                      <input class="u-full-width" type="text" v-model="shares[index]">
+                    </div>
+                  </div>
+                </template>
+              </form>
+          </div>
+        
+      </div>
+      <div class="tab-pane" id="restore">
+
+          <div class="docs-section" id="form-restore">
+              <form @submit.prevent>
+                <div class="row">
+                  <div class="twelve columns">
+                    <label for="secretPiecesRestored"># of pieces to restore</label>
+                    <select class="u-full-width" id="secretPiecesRestored" v-model.number="piecesRestore" type="number">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                  </div>
+                </div>
+                <template v-for="x in piecesRestore">
+                  <div class="row">
+                    <div class="twelve columns">
+                      <input class="u-full-width" type="text" v-model="sharesRestore[x-1]">
+                    </div>
+                  </div>
+                </template>
+                <div class="row">
+                  <div class="twelve columns">
+                    <input class="button-primary" type="submit" value="Restore" @click="restore">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="twelve columns">
+                    <label for="secretRestored">Secret</label>
+                    <input class="u-full-width" type="text" placeholder="" id="secretRestored" v-model="secretRestored">
+                  </div>
+                </div>
+              </form>
+          </div>
+
+      </div>
+    </div>
+
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        secret: '',
+        secretRestored: '',
+        piecesTotal: 3,
+        piecesRestore: 2,
+        shares: [],
+        sharesRestore: []
+      },
+      methods: {
+        generate: function() {
+            this.shares = secrets.share(secrets.str2hex(this.secret), this.piecesTotal, this.piecesRestore)
+        },
+        restore: function() {
+            this.secretRestored = secrets.hex2str(secrets.combine( this.sharesRestore ));
+        }
+      }
+    })
+  </script>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>
