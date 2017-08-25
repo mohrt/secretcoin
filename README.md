@@ -75,6 +75,7 @@ You may choose to place the shares on separate USB thumb drives, then store thes
 * [Vue.js](https://vuejs.org/) - Javascript tool
 * [JQuery](https://jquery.com/) - Javascript tool
 * [Skeleton](http://getskeleton.com/) - CSS/Javascript tool
+* [FileSaver](https://github.com/eligrey/FileSaver.js/) - CSS/Javascript tool
 
 ## Contributing
 

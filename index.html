@@ -27,6 +27,7 @@
   <!-- SCRIPTS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script src="js/jquery-3.2.1.slim.min.js"></script>
+  <script src="js/FileSaver.js"></script>
   <script src="js/skeleton-tabs.js"></script>
   <script src="js/vue.min.js"></script>
   <script src="js/secrets.min.js"></script>
@@ -124,11 +125,22 @@
                 </div>
                 <template v-for="(share,index) in shares">
                   <div class="row">
-                    <div class="twelve columns">
-                      <input class="u-full-width" type="text" v-model="shares[index]">
+                    <div class="six columns">
+                      <input class="u-full-width" type="text" v-model="shares[index]" :id="['share-' + index]" @focus="$event.target.select()">
+                    </div>
+                    <div class="two columns">
+                      <input class="button" type="submit" value="download" @click="download(index)">
+                    </div>
+                    <div class="four columns">
+                      <i>{{ downloadFilenamePrefix }}-{{ index }}.txt</i>
                     </div>
                   </div>
                 </template>
+                <div class="row" v-show="shares.length > 0">
+                  <div class="twelve columns">
+                    <input class="u-full-width" type="text" placeholder="filename prefix" id="downloadFilenamePrefix" v-model="downloadFilenamePrefix">
+                  </div>
+                </div>
               </form>
           </div>
         
@@ -139,30 +151,9 @@
               <form @submit.prevent>
                 <div class="row">
                   <div class="twelve columns">
-                    <label for="secretSharesRestored"># of shares to restore</label>
-                    <select class="u-full-width" id="secretSharesRestored" v-model.number="sharesRequired" type="number">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
-                    </select>
+                      <input type="file" id="files" name="files[]" multiple @change="upload" />
                   </div>
                 </div>
-                <template v-for="x in sharesRequired">
-                  <div class="row">
-                    <div class="twelve columns">
-                      <input class="u-full-width" type="text" v-model="sharesRequired[x-1]">
-                    </div>
-                  </div>
-                </template>
                 <div class="row">
                   <div class="twelve columns">
                     <input class="button-primary" type="submit" value="Restore" @click="restore">
@@ -171,7 +162,12 @@
                 <div class="row">
                   <div class="twelve columns">
                     <label for="secretRestored">Secret</label>
-                    <input class="u-full-width" type="text" placeholder="" id="secretRestored" v-model="secretRestored">
+                    <input class="u-full-width" type="text" placeholder="" id="secretRestored" v-model="secretRestored" @focus="$event.target.select()">
+                  </div>
+                </div>
+                <div class="row" v-show="isErrorRestoring">
+                  <div class="twelve columns">
+                     <i class="red">There was an error restoring the secret. Check that your uploaded files are valid shares.</i>
                   </div>
                 </div>
               </form>
@@ -190,14 +186,46 @@
         sharesTotal: 3,
         sharesRequired: 2,
         shares: [],
-        sharesRestore: []
+        sharesRestore: [],
+        downloadFilenamePrefix: 'securecoin',
+        isErrorRestoring: false
       },
       methods: {
         generate: function() {
             this.shares = secrets.share(secrets.str2hex(this.secret), this.sharesTotal, this.sharesRequired)
         },
         restore: function() {
+          this.isErrorRestoring = false;
+          try {
             this.secretRestored = secrets.hex2str(secrets.combine( this.sharesRestore ));
+          } catch (e) {
+            console.log('error!', e);
+            this.isErrorRestoring = true;
+          }
+        },
+        download: function (idx) {
+            var prefix = this.downloadFilenamePrefix.length > 0 ? this.downloadFilenamePrefix : 'securecoin';
+            saveTextAs(this.shares[idx], prefix + '-' + idx + '.txt' );   
+        },
+        upload: function(e) {
+            this.sharesRestore = [];
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+              return;
+            for (var i = 0, f; f = files[i]; i++) {
+                var fr = new FileReader();
+                var myshares = this.sharesRestore;
+                fr.onload = function(e) {
+                    myshares.push(e.target.result);
+                };
+                fr.readAsText(files[i]);
+            }
+        }
+
+      },
+      watch: {
+        downloadFilenamePrefix: function (val) {
+          this.downloadFilenamePrefix = this.downloadFilenamePrefix.replace(/[^\w\-\.]/g,'')
         }
       }
     })
