@@ -83,7 +83,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="six columns">
+                  <div class="four columns">
                     <label for="secretShares"># of shares</label>
                     <select class="u-full-width" id="secretShares" v-model.number="sharesTotal" type="number">
                       <option value="1">1</option>
@@ -100,7 +100,7 @@
                       <option value="12">12</option>
                     </select>
                   </div>
-                  <div class="six columns">
+                  <div class="four columns">
                     <label for="secretSharesRequired"># required shares to restore</label>
                     <select class="u-full-width" id="secretSharesRequired" v-model.number="sharesRequired" type="number">
                       <option value="1">1</option>
@@ -117,9 +117,13 @@
                       <option value="12">12</option>
                     </select>
                   </div>
+                  <div class="four columns">
+                    <label for="downloadFilenamePrefix"># filename prefix</label>
+                    <input class="u-full-width" type="text" placeholder="" id="downloadFilenamePrefix" v-model="downloadFilenamePrefix">
+                  </div>
                 </div>
                 <div class="row">
-                  <div class="twelve columns">
+                  <div class="two columns">
                     <input class="button-primary" type="submit" value="Generate" @click="generate">
                   </div>
                 </div>
@@ -131,16 +135,11 @@
                     <div class="two columns">
                       <input class="button" type="submit" value="download" @click="download(index)">
                     </div>
-                    <div class="four columns">
+                    <div class="four columns centered">
                       <i>{{ downloadFilenamePrefix }}-{{ index }}.txt</i>
                     </div>
                   </div>
                 </template>
-                <div class="row" v-show="shares.length > 0">
-                  <div class="twelve columns">
-                    <input class="u-full-width" type="text" placeholder="filename prefix" id="downloadFilenamePrefix" v-model="downloadFilenamePrefix">
-                  </div>
-                </div>
               </form>
           </div>
         
@@ -151,11 +150,16 @@
               <form @submit.prevent>
                 <div class="row">
                   <div class="twelve columns">
-                      <input type="file" id="files" name="files[]" multiple @change="upload" />
+                      <div class="docs-section" id="restore">
+                        <p>Multi-select share files to restore your secret. Be sure to provide at least number of shares required.</p>
+                      </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="twelve columns">
+                  <div class="six columns">
+                      <input type="file" id="files" name="files[]" multiple @change="upload" />
+                  </div>
+                  <div class="six columns">
                     <input class="button-primary" type="submit" value="Restore" @click="restore">
                   </div>
                 </div>
