@@ -83,8 +83,8 @@
                 </div>
                 <div class="row">
                   <div class="six columns">
-                    <label for="secretPieces"># of pieces</label>
-                    <select class="u-full-width" id="secretPieces" v-model.number="piecesTotal" type="number">
+                    <label for="secretShares"># of shares</label>
+                    <select class="u-full-width" id="secretShares" v-model.number="sharesTotal" type="number">
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -100,8 +100,8 @@
                     </select>
                   </div>
                   <div class="six columns">
-                    <label for="secretPieces"># required to restore</label>
-                    <select class="u-full-width" id="secretPieces" v-model.number="piecesRestore" type="number">
+                    <label for="secretSharesRequired"># required shares to restore</label>
+                    <select class="u-full-width" id="secretSharesRequired" v-model.number="sharesRequired" type="number">
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -139,8 +139,8 @@
               <form @submit.prevent>
                 <div class="row">
                   <div class="twelve columns">
-                    <label for="secretPiecesRestored"># of pieces to restore</label>
-                    <select class="u-full-width" id="secretPiecesRestored" v-model.number="piecesRestore" type="number">
+                    <label for="secretSharesRestored"># of shares to restore</label>
+                    <select class="u-full-width" id="secretSharesRestored" v-model.number="sharesRequired" type="number">
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -156,10 +156,10 @@
                     </select>
                   </div>
                 </div>
-                <template v-for="x in piecesRestore">
+                <template v-for="x in sharesRequired">
                   <div class="row">
                     <div class="twelve columns">
-                      <input class="u-full-width" type="text" v-model="sharesRestore[x-1]">
+                      <input class="u-full-width" type="text" v-model="sharesRequired[x-1]">
                     </div>
                   </div>
                 </template>
@@ -187,14 +187,14 @@
       data: {
         secret: '',
         secretRestored: '',
-        piecesTotal: 3,
-        piecesRestore: 2,
+        sharesTotal: 3,
+        sharesRequired: 2,
         shares: [],
         sharesRestore: []
       },
       methods: {
         generate: function() {
-            this.shares = secrets.share(secrets.str2hex(this.secret), this.piecesTotal, this.piecesRestore)
+            this.shares = secrets.share(secrets.str2hex(this.secret), this.sharesTotal, this.sharesRequired)
         },
         restore: function() {
             this.secretRestored = secrets.hex2str(secrets.combine( this.sharesRestore ));

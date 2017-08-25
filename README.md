@@ -1,6 +1,6 @@
-# Project Title
+# Secret Coin
 
-Secret Coin: Store your secrets securely.
+Store your secrets securely.
 
 ## Description
 
@@ -16,7 +16,7 @@ You will need to access the tool via an HTTP URL on a browser, and not direct fi
 
 You will need:
 
-* The .zip archive of this repository (get from GitHub Download button)
+* The [.zip](https://github.com/mohrt/secretcoin) archive of this repository (get from GitHub Download button)
 * python scripting language. This comes with OSX. PC users may need to install python, or use another web server implementation, out of scope for these docs.
 * HTML5 compatible browser such as Google Chrome
 
@@ -36,7 +36,7 @@ cd secretcoin-master
 
 start Simple HTTP Server
 ```
-cd secretcoin-master
+python -m SimpleHTTPServer 8000
 ```
 
 Visit the website in your browser
@@ -44,25 +44,27 @@ Visit the website in your browser
 http://localhost:8000
 ```
 
-# Paste or type in a secret, such as mnemonic phrase or private key.
+## Paste or type in a secret, such as mnemonic phrase or private key.
 
-# Chooose the total number of shares, and required number to restore the secret.
+There is a text area for this.
+
+## Chooose the total number of shares, and required number to restore the secret.
 
 For example, you might want to split your secret into three separate shares, and require any two of three shares to restore the secret.
 
-# Click Generate
+## Click Generate
 
 This will generate the shares.
 
-# Download the individual shares
+## Download the individual shares
 
 This will create individual files, one for each share.
 
-# TEST THE RESTORE
+## TEST THE RESTORE
 
 It is absolutely crucial that you test the restore. Choose the required number of shares and be sure the secret is regenerated correctly.
 
-# Save the shares separately.
+## Save the shares separately.
 
 You may choose to place the shares on separate USB thumb drives, then store these drives in three separate, safe locations. You could also print the shares and store the paper copies.
 
