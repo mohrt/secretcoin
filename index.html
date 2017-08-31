@@ -26,12 +26,14 @@
 
   <!-- SCRIPTS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="js/bitcore-lib.min.js"></script>
+  <script src="js/bitcore-mnemonic.min.js"></script>
   <script src="js/jquery-3.2.1.slim.min.js"></script>
   <script src="js/FileSaver.js"></script>
   <script src="js/skeleton-tabs.js"></script>
   <script src="js/vue.min.js"></script>
-  <script src="js/secrets.min.js"></script>
-
+  <script src="js/secrets.js"></script>
+  
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -62,13 +64,13 @@
     <div class="tab-content">
       <div class="tab-pane active" id="about">
         <div class="docs-section" id="intro">
-          <p>Storing sensitive data can be problematic. If it gets accidentally lost or destroyed, you lose your data. If stolen, your data is compromised. You can make multiple copies and store them in isolation, but this increases the risk of being stolen or misplaced. You can encrypt them, but then you face the same problem storing the encryption key.</p>
-          <p>Secret Coin uses <a href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir's Secret Sharing</a> algorithm to divide your secret into multiple (N) shares, and then you can restore the secret using a specified number of the shares (M of N). None of the shares contain identifiable information about the secret. If any share, or up to (M-1) shares are compromised, the secret is still completely unknown.</p>
-          <p>
-          This type of security model is critical for data such as Bitcoin mnemonic phrases, private keys, or anything giving one "keys to the kingdom."
+          <p>Storing sensitive data can be problematic. A 24 word BIP39 mnemonic for instance, is the "keys to the kingdom". If stolen, your addresses are compromised. If you make multiple copies, this increases the risk of being stolen or misplaced. If encrypted, you face the same problem storing the encryption key. Is there a safer way?
           </p>
           <p>
-            All operations happen in your browser. You can disconnect from the network and use this web page. The source for this website is available on <a href="https://github.com/mohrt/secretcoin">GitHub</a>. <span class="red">It is highly recommended to download the source .zip and launch it on an off-line computer.</span> Instructions can be found at the <a href="https://github.com/mohrt/secretcoin">Secret Coin Source Repository</a>.
+          Secret Coin uses <a href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir's Secret Sharing</a> algorithm to divide your secret into multiple (N) shares, and then you can restore the secret using a specified number of the shares (M of N). None of the shares contain identifiable information about the secret. If any share, or up to (M-1) shares are compromised, the secret is still safe.
+          </p>
+          <p>
+            All operations happen in your browser. You can disconnect from the network and use this web page. The source for this website is available on <a href="https://github.com/mohrt/secretcoin">GitHub</a>. <span class="red">It is highly recommended to download the source .zip and launch it on an off-line computer.</span> Instructions can be found at the <a href="https://github.com/mohrt/secretcoin">GitHub Repository</a>.
           </p>
         </div>
       </div>
@@ -78,8 +80,12 @@
               <form @submit.prevent>
                 <div class="row">
                   <div class="twelve columns">
-                    <label for="secretInput">Secret</label>
-                    <input class="u-full-width" type="text" placeholder="Enter a mnemonic phrase, private key, or any text you want kept secret." id="secretInput" v-model="secret">
+                    <label for="secretInput">Generate <a href="" @click.prevent="generateMnemonic(32 * 4)">12</a> or <a href="" @click.prevent="generateMnemonic(32 * 8)">24</a> word bip39 phrase</label>
+                    <textarea class="u-full-width" type="text" placeholder="Enter a mnemonic phrase, private key, or any text you want kept secret." id="secretInput" v-model="secret" @keyup="validateMnemonic(secret)"></textarea> </div>
+                </div>
+                <div class="row">
+                  <div class="twelve columns">
+                    <i class="red" v-show="!mnemonicIsValid">Warning: invalid BIP39 phrase</i>
                   </div>
                 </div>
                 <div class="row">
@@ -174,7 +180,7 @@
                 <div class="row">
                   <div class="twelve columns">
                     <label for="secretRestored">Secret</label>
-                    <input class="u-full-width" type="text" placeholder="" id="secretRestored" v-model="secretRestored" @focus="$event.target.select()">
+                    <textarea class="u-full-width" type="text" placeholder="" id="secretRestored" v-model="secretRestored" @focus="$event.target.select()"></textarea>
                   </div>
                 </div>
                 <div class="row" v-show="isErrorRestoring">
@@ -190,6 +196,7 @@
 
   </div>
   <script>
+    var Mnemonic = require('bitcore-mnemonic')
     var app = new Vue({
       el: '#app',
       data: {
@@ -200,11 +207,23 @@
         shares: [],
         sharesRestore: [],
         downloadFilenamePrefix: 'securecoin',
-        isErrorRestoring: false
+        isErrorRestoring: false,
+        mnemonicIsValid: true
       },
       methods: {
         generate: function() {
             this.shares = secrets.share(secrets.str2hex(this.secret), this.sharesTotal, this.sharesRequired)
+        },
+        generateMnemonic: function (size) {
+            var code = new Mnemonic(size, Mnemonic.Words.ENGLISH)
+            this.secret = code.toString()
+        },
+        validateMnemonic: function (secret) {
+            try {
+              this.mnemonicIsValid = secret.length == 0 || Mnemonic.isValid(secret)
+            } catch (e) {
+              // do not throw error
+            }
         },
         restore: function() {
           this.isErrorRestoring = false;
