@@ -222,6 +222,9 @@ exports.share = function(secret, numShares, threshold, padLength, withoutPrefix)
 	if(typeof padLength !== 'number' || padLength%1 !== 0 ){
 		throw new Error('Zero-pad length must be an integer greater than 1.');
 	}
+    if(numShares < threshold){
+        throw new Error('The number of shares must not be lower than the threshold.');
+    }
 	
 	if(config.unsafePRNG){
 		warn();
